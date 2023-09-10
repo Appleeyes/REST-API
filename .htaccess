@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /REST-API
+
+# Rewrite requests for /api to /index.php
+RewriteRule ^api$ index.php [L,QSA]
+
+# Rewrite requests for /api/John%20Doe to /index.php?name=John%20Doe
+RewriteRule ^api/(.*)$ index.php?name=$1 [L,QSA]

@@ -81,7 +81,33 @@ function testUpdatePerson()
     curl_close($ch);
 }
 
+function testRemovePerson()
+{
+    // Define the API base URL
+    $apiBaseUrl = 'http://localhost/REST-API/api/index.php';
+
+    // Define the name of the person to remove
+    $personName = 'Brown Dude';
+
+    // Create a new cURL session for the DELETE request
+    $ch = curl_init($apiBaseUrl . '/people/' . urlencode($personName));
+
+    // Set cURL options for the DELETE request
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+
+    // Execute the DELETE request
+    $response = curl_exec($ch);
+
+    // Close the cURL session
+    curl_close($ch);
+
+    // Output the response
+    echo $response;
+}
+
 
 // testCreatePerson();
-// testReadPerson();
-testUpdatePerson();
+testReadPerson();
+// testUpdatePerson();
+// testRemovePerson();
