@@ -1,8 +1,8 @@
-# API Documentation
+# REST-API Documentation
 
 ## Introduction
 
-This API documentation provides details on how to interact with the RESTful API for managing people. It includes information on endpoints, request/response formats, setup instructions, and sample API usage.
+This REST-API documentation provides details on how to interact with the RESTful API for managing people. It includes information on endpoints, request/response formats, setup instructions, and sample API usage.
 
 ## Base URL
 
@@ -133,39 +133,42 @@ To set up and run this API locally, follow these steps:
 
 
 3. Start the local development server:
-```
-php -S localhost:8000
-```
+   ```
+   php -S localhost:8000
+   ```
 
 4. If you are using loaclhost:8000, then you can access your endpoint using:
-```
-http://localhost:8000/api
-```
+   ```
+   http://localhost:8000/api
+   ```
 
 # Sample API Usage
-Here are some sample API requests using curl:
+Here are some sample REST-API requests using curl:
 
 - Create a new person:
-```
-curl -X POST http://localhost:8000/api/people -H "Content-Type: application/json" -d '{"name": "Jane Doe", "age": 28, "track": "Frontend Developer"}'
-```
+   ```
+   curl -X POST http://localhost:8000/api/people -H "Content-Type: application/json" -d '{"name": "Jane Doe", "age": 28, "track": "Frontend Developer"}'
+   ```
 
 - Retrieve details of a person by name:
-```
-curl http://localhost:8000/api/John%20Doe
-```
+  ```
+   curl http://localhost:8000/api/John%20Doe
+  ```
 
 - Update details of an existing person by name:
-```
-curl -X PUT http://localhost:8000/api/John%20Doe -H "Content-Type: application/json" -d '{"name": "John Doe", "age": 35, "track": "DevOps Engineer"}'
-```
+  ```
+   curl -X PUT http://localhost:8000/api/John%20Doe -H "Content-Type: application/json" -d '{"name": "John Doe", "age": 35, "track": "DevOps   Engineer"}'
+  ```
 - Remove a person by name:
-curl -X DELETE http://localhost:8000/api/John%20Doe
+  ```
+  curl -X DELETE http://localhost:8000/api/John%20Doe
+  ```
+
 
 
 # Test Script Usage
 
-This section provides instructions on how to use the test script for the People API. The test script is a PHP script that demonstrates how to interact with the API endpoints using HTTP requests.
+This section provides instructions on how to use the test script for the REST-API. The test script is a PHP script that demonstrates how to interact with the API endpoints using HTTP requests.
 
 ## Prerequisites
 
@@ -173,27 +176,26 @@ Before using the test script, ensure that you have the following prerequisites:
 
 - PHP installed on your local machine.
 - Composer installed for managing PHP dependencies.
-- The People API server is running and accessible.
+- The REST-API server is running and accessible.
 
 ## Running the Test Script
 
 To run the test script, follow these steps:
 
 1. Navigate into the test script folder in your terminal e.g:
+     ```
+      http://localhost:8000/tests/test.php
+     ```
 
-```
-http://localhost:8000/tests/test.php
-```
+2. Execute the test script by providing the base URL of the REST-API as an  e.g:
+     ```
+      php test.php http://localhost/REST-API/index.php
+    ```
 
-2. Execute the test script by providing the base URL of the People API as an  e.g:
-
-```
-php test.php http://localhost/REST-API/index.php
-```
 
 3. Go to the base of the `test.php` file and comment out other request incase you want to run just one request.
 
 # Conclusion
-This API documentation provides a comprehensive guide for interacting with the People API. If you have any questions or encounter any issues, please refer to the API documentation.
+This API documentation provides a comprehensive guide for interacting with the REST-API. If you have any questions or encounter any issues, please refer to the API documentation.
 
 Note: Replace `http://your-api-domain.com` or `http://localhost:8000` with the actual base URL of your API.
