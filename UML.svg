@@ -1,0 +1,78 @@
+-----------------------------------------
+|           RESTful API Project         |
+-----------------------------------------
+| - index.php: PHP script              |
+| - .htaccess: Apache configuration    |
+| - config/: Configuration files      |
+| - tests/: Test scripts               |
+| - README.md: Project documentation  |
+| ------------------------------------|
+| + initialize(): void                 |
+| + start(): void                      |
+| - configureRoutes(): void            |
+| - handleRequest(): void              |
+-----------------------------------------
+
+-----------------------------------------
+|               Database                |
+-----------------------------------------
+| - Connection: PDO                    |
+| ------------------------------------|
+| + connect(): void                    |
+| + disconnect(): void                 |
+| + executeQuery(): ResultSet          |
+| + executeStatement(): void           |
+-----------------------------------------
+
+-----------------------------------------
+|                Router                 |
+-----------------------------------------
+| - Routes: array                      |
+| ------------------------------------|
+| + addRoute(): void                   |
+| + removeRoute(): void                |
+| + routeRequest(): void               |
+| - matchRoute(): Route                |
+-----------------------------------------
+
+-----------------------------------------
+|                Route                  |
+-----------------------------------------
+| - Method: string                     |
+| - Path: string                       |
+| - Handler: CallbackFunction          |
+| ------------------------------------|
+| + getMethod(): string                |
+| + getPath(): string                  |
+| + getHandler(): CallbackFunction    |
+-----------------------------------------
+
+-----------------------------------------
+|        CallbackFunction                |
+-----------------------------------------
+| - Name: string                        |
+| ------------------------------------|
+| + invoke(): void                      |
+-----------------------------------------
+
+-----------------------------------------
+|        DatabaseTable                   |
+-----------------------------------------
+| - Name: string                        |
+| - Columns: array                      |
+| ------------------------------------|
+| + fetch(): ResultSet                  |
+| + insert(): void                      |
+| + update(): void                      |
+| + delete(): void                      |
+| - validateData(): bool                |
+-----------------------------------------
+
+-----------------------------------------
+|            ResultSet                   |
+-----------------------------------------
+| - Rows: array                         |
+| ------------------------------------|
+| + fetch(): array                      |
+| + fetchAll(): array                   |
+-----------------------------------------
