@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Validate input
         if (!isset($data->name) || !is_string($data->name)) {
-            http_response_code(400); // Bad Request
+            http_response_code(400);
             echo json_encode(["message" => "Invalid input data"]);
             exit();
         }
@@ -35,10 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':track', $track, PDO::PARAM_STR);
         $stmt->execute();
 
-        http_response_code(201); // Created
+        http_response_code(201);
         echo json_encode(["message" => "Person created successfully"]);
     } catch (PDOException $e) {
-        http_response_code(500); // Internal Server Error
+         // Internal Server Error
+        http_response_code(500);
         echo json_encode(["message" => "Database error: " . $e->getMessage()]);
     }
 }
@@ -67,14 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $person = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$person) {
-            http_response_code(404); // Not Found
+            http_response_code(404);
             echo json_encode(["message" => "Person not found"]);
         } else {
-            http_response_code(200); // OK
+            http_response_code(200);
             echo json_encode($person);
         }
     } catch (PDOException $e) {
-        http_response_code(500); // Internal Server Error
+        // Internal Server Error
+        http_response_code(500);
         echo json_encode(["message" => "Database error: " . $e->getMessage()]);
     }
 }
@@ -86,14 +88,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $nameFromURL = isset($name) ? $name : '';
 
     // Use the name from the query parameter if available, otherwise use the name from the URL
-    $name = !empty($nameFromQuery) ? $nameFromQuery : $nameFromURL; // Decode the name from the URL
+    $name = !empty($nameFromQuery) ? $nameFromQuery : $nameFromURL;
 
     // Get the updated data from the request body
     $data = json_decode(file_get_contents("php://input"));
 
     // Validate input data
     if (!isset($data->name) || !is_string($data->name)) {
-        http_response_code(400); // Bad Request
+        // Bad Request
+        http_response_code(400);
         echo json_encode(["message" => "Invalid input data"]);
         exit();
     }
@@ -122,15 +125,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         var_dump($name);
         if ($rowCount > 0) {
             // Person updated successfully
-            http_response_code(200); // OK
+            http_response_code(200);
             echo json_encode(["message" => "Person updated successfully"]);
         } else {
             // Person not found
-            http_response_code(404); // Not Found
+            http_response_code(404);
             echo json_encode(["message" => "Person not found"]);
         }
     } catch (PDOException $e) {
-        http_response_code(500); // Internal Server Error
+        // Internal Server Error
+        http_response_code(500);
         echo json_encode(["message" => "Database error: " . $e->getMessage()]);
     }
 }
@@ -143,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $nameFromURL = isset($name) ? $name : '';
 
     // Use the name from the query parameter if available, otherwise use the name from the URL
-    $name = !empty($nameFromQuery) ? $nameFromQuery : $nameFromURL; // Decode the name from the URL
+    $name = !empty($nameFromQuery) ? $nameFromQuery : $nameFromURL;
 
     // Delete data from the database
     try {
@@ -159,15 +163,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         $rowCount = $stmt->rowCount();
         if ($rowCount > 0) {
             // Person deleted successfully
-            http_response_code(200); // OK
+            http_response_code(200);
             echo json_encode(["message" => "Person deleted successfully"]);
         } else {
             // Person not found
-            http_response_code(404); // Not Found
+            http_response_code(404);
             echo json_encode(["message" => "Person not found"]);
         }
     } catch (PDOException $e) {
-        http_response_code(500); // Internal Server Error
+         // Internal Server Error
+        http_response_code(500);
         echo json_encode(["message" => "Database error: " . $e->getMessage()]);
     }
 }
