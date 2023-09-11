@@ -16,11 +16,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Validate input
         if (!isset($data->name) || !is_string($data->name)) {
-            http_response_code(400);
-            echo json_encode(["message" => "Invalid input data"]);
+            http_response_code(400); // Bad Request
+            echo json_encode(["message" => "Invalid name"]);
             exit();
         }
 
+        // Validate age (assuming age should be a positive integer)
+        if (!isset($data->age) || !is_int($data->age) || $data->age <= 0) {
+            http_response_code(400); // Bad Request
+            echo json_encode(["message" => "Invalid age"]);
+            exit();
+        }
+
+        // Validate track (assuming track should be a string)
+        if (!isset($data->track) || !is_string($data->track)) {
+            http_response_code(400); // Bad Request
+            echo json_encode(["message" => "Invalid track"]);
+            exit();
+        }
         $name = $data->name;
         $age = $data->age;
         $track = $data->track;
@@ -93,11 +106,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     // Get the updated data from the request body
     $data = json_decode(file_get_contents("php://input"));
 
-    // Validate input data
-    if (!isset($data->name) || !is_string($data->name)) {
-        // Bad Request
-        http_response_code(400);
-        echo json_encode(["message" => "Invalid input data"]);
+    // Validate input
+    if (!isset($data->name) || !is_string($data->name)
+    ) {
+        http_response_code(400); // Bad Request
+        echo json_encode(["message" => "Invalid name"]);
+        exit();
+    }
+
+    // Validate age (assuming age should be a positive integer)
+    if (!isset($data->age) || !is_int($data->age) || $data->age <= 0
+    ) {
+        http_response_code(400); // Bad Request
+        echo json_encode(["message" => "Invalid age"]);
+        exit();
+    }
+
+    // Validate track (assuming track should be a string)
+    if (!isset($data->track) || !is_string($data->track)) {
+        http_response_code(400); // Bad Request
+        echo json_encode(["message" => "Invalid track"]);
         exit();
     }
 
