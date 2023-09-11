@@ -47,13 +47,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         // Get the name from the URL
-        $name = isset($name) ? $name : '';
+        $name = isset($_GET['name']) ? $_GET['name'] : '';
+
+        // If name is not found in $_GET, try to parse it from the URL
+        if (empty($name)) {
+            $uri = $_SERVER['REQUEST_URI'];
+            $uriParts = explode('/', $uri);
+            $name = urldecode(end($uriParts));
+        }
 
         // Create a database connection
         $db = new PDO($dbConfig['dsn'], $dbConfig['username'], $dbConfig['password']);
-        $db->setAttribute(PDO::ATTR_ERRMODE,
-            PDO::ERRMODE_EXCEPTION
-        );
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Fetch data from the database based on the name
         $stmt = $db->prepare("SELECT * FROM people WHERE name = :name");
@@ -76,11 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // Update details of an existing person by name
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    // Parse the URL to get the person's name
-    $urlParts = parse_url($_SERVER['REQUEST_URI']);
-    $path = $urlParts['path'];
-    $pathSegments = explode('/', $path);
-    $name = urldecode($pathSegments[count($pathSegments) - 1]); // Decode the name from the URL
+    // Get the name from both $_GET and the URL
+    $nameFromQuery = isset($_GET['name']) ? $_GET['name'] : '';
+    $nameFromURL = isset($name) ? $name : '';
+
+    // Use the name from the query parameter if available, otherwise use the name from the URL
+    $name = !empty($nameFromQuery) ? $nameFromQuery : $nameFromURL; // Decode the name from the URL
 
     // Get the updated data from the request body
     $data = json_decode(file_get_contents("php://input"));
@@ -132,11 +138,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
 // Remove a person by name
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-    // Parse the URL to get the person's name
-    $urlParts = parse_url($_SERVER['REQUEST_URI']);
-    $path = $urlParts['path'];
-    $pathSegments = explode('/', $path);
-    $name = urldecode($pathSegments[count($pathSegments) - 1]); // Decode the name from the URL
+    // Get the name from both $_GET and the URL
+    $nameFromQuery = isset($_GET['name']) ? $_GET['name'] : '';
+    $nameFromURL = isset($name) ? $name : '';
+
+    // Use the name from the query parameter if available, otherwise use the name from the URL
+    $name = !empty($nameFromQuery) ? $nameFromQuery : $nameFromURL; // Decode the name from the URL
 
     // Delete data from the database
     try {

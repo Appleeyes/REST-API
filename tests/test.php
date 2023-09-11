@@ -1,113 +1,102 @@
 <?php
 
+// Function to send HTTP requests and handle responses
+function sendRequest($url, $method, $data = null)
+{
+    $ch = curl_init($url);
+
+    // Set common cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    if ($method === 'POST') {
+        // Configure POST request
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    } elseif ($method === 'PUT') {
+        // Configure PUT request
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    } elseif ($method === 'DELETE') {
+        // Configure DELETE request
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+    }
+
+    // Execute the request
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    return $response;
+}
 
 // Test Create (Post) operation
-function testCreatePerson()
+function testCreatePerson($apiBaseUrl)
 {
-    $apiBaseUrl = 'http://localhost/REST-API/api/index.php';
-
-    // Define test data for creating a new person
-    $data = json_encode([
+    $data = [
         "name" => "Brown Dude",
         "age" => "25",
         "track" => "Videographic"
-    ]);
+    ];
 
-    // Create a new cURL session
-    $ch = curl_init($apiBaseUrl);
+    $url = $apiBaseUrl;
 
-    // Set cURL options for the POST request
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-
-    // Execute the POST request
-    $response = curl_exec($ch);
-    echo $response;
-    curl_close($ch);
+    $response = sendRequest($url, 'POST', $data);
+    echo "Create Operation:\n";
+    echo $response . "\n";
 }
 
 // Test Read (GET) operation
-function testReadPerson()
+function testReadPerson($apiBaseUrl)
 {
-    $apiBaseUrl = 'http://localhost/REST-API/api/index.php';
-
-    // Define the person's name to retrieve
     $personName = 'John Doe';
 
-    // Build the URL for retrieving a person by name
     $url = $apiBaseUrl . '?name=' . urlencode($personName);
 
-    // Create a new cURL session
-    $ch = curl_init($url);
-
-    // Set cURL options for the GET request
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    // Execute the GET request
-    $response = curl_exec($ch);
-    echo $response;
-    curl_close($ch);
+    $response = sendRequest($url, 'GET');
+    echo "Read Operation:\n";
+    echo $response . "\n";
 }
 
-// Test Read (PUT) operation
-function testUpdatePerson()
+// Test Update (PUT) operation
+function testUpdatePerson($apiBaseUrl)
 {
-    $apiBaseUrl = 'http://localhost/REST-API/api/index.php';
-
-    // Define the name of the person to update
     $personName = 'John Doe';
 
-    // Define the updated data
-    $updatedData = json_encode([
+    $data = [
         "name" => "John Doe",
         "age" => "15",
-        "track" => "Backend Developer"
-    ]);
+        "track" => "Backend"
+    ];
 
-    // Create a new cURL session
-    $ch = curl_init($apiBaseUrl . '/people/' . urlencode($personName));
+    $url = $apiBaseUrl . '?name=' . urlencode($personName);
 
-    // Set cURL options for the PUT request
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $updatedData);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-
-    // Execute the PUT request
-    $response = curl_exec($ch);
-    echo $response;
-    curl_close($ch);
+    $response = sendRequest($url, 'PUT', $data);
+    echo "Update Operation:\n";
+    echo $response . "\n";
 }
 
-function testRemovePerson()
+// Test Delete (DELETE) operation
+function testDeletePerson($apiBaseUrl)
 {
-    // Define the API base URL
-    $apiBaseUrl = 'http://localhost/REST-API/api/index.php';
-
-    // Define the name of the person to remove
     $personName = 'Brown Dude';
 
-    // Create a new cURL session for the DELETE request
-    $ch = curl_init($apiBaseUrl . '/people/' . urlencode($personName));
+    $url = $apiBaseUrl . '?name=' . urlencode($personName);
 
-    // Set cURL options for the DELETE request
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-
-    // Execute the DELETE request
-    $response = curl_exec($ch);
-
-    // Close the cURL session
-    curl_close($ch);
-
-    // Output the response
-    echo $response;
+    $response = sendRequest($url, 'DELETE');
+    echo "Delete Operation:\n";
+    echo $response . "\n";
 }
 
+if (count($argv) < 2) {
+    echo "Usage: php test.php <base_url>\n";
+    exit(1);
+}
 
-// testCreatePerson();
-testReadPerson();
-// testUpdatePerson();
-// testRemovePerson();
+$apiBaseUrl = $argv[1];
+
+// Run all CRUD operations
+testCreatePerson($apiBaseUrl);
+testReadPerson($apiBaseUrl);
+testUpdatePerson($apiBaseUrl);
+testDeletePerson($apiBaseUrl);
