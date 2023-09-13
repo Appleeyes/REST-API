@@ -43,9 +43,9 @@ Follow these steps to set up and run the REST-API on your local machine.
 The REST-API provides the following endpoints:
 
 - `POST /api:` Create a new person.
-- `GET /api/{name}:` Retrieve details of a person by name.
-- `PUT /api/{name}:` Update details of an existing person by name.
-- `DELETE /api/{name}:` Remove a person by name.
+- `GET /api/{id}:` Retrieve details of a person by name.
+- `PUT /api/{id}:` Update details of an existing person by name.
+- `DELETE /api/{id}:` Remove a person by name.
 
 ## Documentation
 

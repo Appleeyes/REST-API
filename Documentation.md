@@ -26,8 +26,6 @@ http://your-api-domain.com/api
     ```json
     {
         "name": "John Doe",
-        "age": 30,
-        "track": "Backend Developer"
     }
     ```
 
@@ -43,7 +41,7 @@ http://your-api-domain.com/api
 
 ### Retrieve Details of a Person by Name
 
-- **Endpoint:** `http://your-api-domain.com/api/{name}`
+- **Endpoint:** `http://your-api-domain.com/api/{id}`
 - **Method:** GET
 - **Response:**
   - Status Code: 200 OK
@@ -52,8 +50,6 @@ http://your-api-domain.com/api
     ```json
     {
         "name": "John Doe",
-        "age": 30,
-        "track": "Backend Developer"
     }
     ```
   - Status Code: 404 Not Found (If the person is not found)
@@ -67,7 +63,7 @@ http://your-api-domain.com/api
 
 ### Update Details of an Existing Person by Name
 
-- **Endpoint:** `http://your-api-domain.com/api/{name}`
+- **Endpoint:** `http://your-api-domain.com/api/{id}`
 - **Method:** PUT
 - **Request Body:**
   - Content-Type: application/json
@@ -76,8 +72,6 @@ http://your-api-domain.com/api
     ```json
     {
         "name": "John Doe",
-        "age": 35,
-        "track": "DevOps Engineer"
     }
     ```
 
@@ -100,7 +94,7 @@ http://your-api-domain.com/api
 
 ### Remove a Person by Name
 
-- **Endpoint:** `http://your-api-domain.com/api/{name}`
+- **Endpoint:** `http://your-api-domain.com/api/{id}`
 - **Method:** DELETE
 - **Response:**
   - Status Code: 200 OK
@@ -147,21 +141,21 @@ Here are some sample REST-API requests using curl:
 
 - Create a new person:
    ```
-   curl -X POST http://localhost:8000/api/people -H "Content-Type: application/json" -d '{"name": "Jane Doe", "age": 28, "track": "Frontend Developer"}'
+   curl -X POST http://localhost:8000/api -H "Content-Type: application/json" -d '{"name": "John Doe"}'
    ```
 
 - Retrieve details of a person by name:
   ```
-   curl http://localhost:8000/api/John%20Doe
+   curl http://localhost:8000/api/2
   ```
 
 - Update details of an existing person by name:
   ```
-   curl -X PUT http://localhost:8000/api/John%20Doe -H "Content-Type: application/json" -d '{"name": "John Doe", "age": 35, "track": "DevOps   Engineer"}'
+   curl -X PUT http://localhost:8000/api/2 -H "Content-Type: application/json" -d '{"name": "John Doe"}'
   ```
 - Remove a person by name:
   ```
-  curl -X DELETE http://localhost:8000/api/John%20Doe
+  curl -X DELETE http://localhost:8000/api/2
   ```
 
 

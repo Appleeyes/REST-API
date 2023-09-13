@@ -4,10 +4,10 @@ ini_set('display_errors', 1);
 
 require_once 'config/database.php';
 
-// Extract the name parameter from the rewritten URL
+// Extract the id parameter from the rewritten URL
 $uri = $_SERVER['REQUEST_URI'];
 $uriParts = explode('/', $uri);
-$name = urldecode(end($uriParts));
+$id = urldecode(end($uriParts));
 
 // Create a new person
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,35 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        // Validate age (assuming age should be a positive integer)
-        if (!isset($data->age) || !is_int($data->age) || $data->age <= 0) {
-            http_response_code(400); // Bad Request
-            echo json_encode(["message" => "Invalid age"]);
-            exit();
-        }
-
-        // Validate track (assuming track should be a string)
-        if (!isset($data->track) || !is_string($data->track)) {
-            http_response_code(400); // Bad Request
-            echo json_encode(["message" => "Invalid track"]);
-            exit();
-        }
         $name = $data->name;
-        $age = $data->age;
-        $track = $data->track;
 
         $db = new PDO($dbConfig['dsn'], $dbConfig['username'], $dbConfig['password']);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Insert data into the database
-        $stmt = $db->prepare("INSERT INTO people (name, age, track) VALUES (:name, :age, :track)");
+        $stmt = $db->prepare("INSERT INTO people (name) VALUES (:name)");
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-        $stmt->bindParam(':age', $age, PDO::PARAM_STR);
-        $stmt->bindParam(':track', $track, PDO::PARAM_STR);
         $stmt->execute();
 
+        $lastInsertId = $db->lastInsertId();
+
         http_response_code(201);
-        echo json_encode(["message" => "Person created successfully"]);
+        echo json_encode(["message" => "Person created successfully", "id" => $lastInsertId]);
     } catch (PDOException $e) {
          // Internal Server Error
         http_response_code(500);
@@ -57,26 +42,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Retrieve details of a person by name
+// Retrieve details of a person by id
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        // Get the name from the URL
-        $name = isset($_GET['name']) ? $_GET['name'] : '';
+        // Get the id from the URL
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
 
-        // If name is not found in $_GET, try to parse it from the URL
-        if (empty($name)) {
+        // If id is not found in $_GET, try to parse it from the URL
+        if (empty($id)) {
             $uri = $_SERVER['REQUEST_URI'];
             $uriParts = explode('/', $uri);
-            $name = urldecode(end($uriParts));
+            $id = urldecode(end($uriParts));
         }
 
         // Create a database connection
         $db = new PDO($dbConfig['dsn'], $dbConfig['username'], $dbConfig['password']);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Fetch data from the database based on the name
-        $stmt = $db->prepare("SELECT * FROM people WHERE name = :name");
-        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        // Fetch data from the database based on the id
+        $stmt = $db->prepare("SELECT * FROM people WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $person = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -94,63 +79,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-// Update details of an existing person by name
+// Update details of an existing person by id
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    // Get the name from both $_GET and the URL
-    $nameFromQuery = isset($_GET['name']) ? $_GET['name'] : '';
-    $nameFromURL = isset($name) ? $name : '';
+    // Get the id from both $_GET and the URL
+    $idFromQuery = isset($_GET['id']) ? $_GET['id'] : '';
+    $idFromURL = isset($id) ? $id : '';
 
-    // Use the name from the query parameter if available, otherwise use the name from the URL
-    $name = !empty($nameFromQuery) ? $nameFromQuery : $nameFromURL;
+    // Use the id from the query parameter if available, otherwise use the id from the URL
+    $id = !empty($idFromQuery) ? $idFromQuery : $idFromURL;
 
     // Get the updated data from the request body
     $data = json_decode(file_get_contents("php://input"));
 
     // Validate input
-    if (!isset($data->name) || !is_string($data->name)
-    ) {
+    if (!isset($data->name) || !is_string($data->name)) {
         http_response_code(400); // Bad Request
         echo json_encode(["message" => "Invalid name"]);
         exit();
     }
 
-    // Validate age (assuming age should be a positive integer)
-    if (!isset($data->age) || !is_int($data->age) || $data->age <= 0
-    ) {
-        http_response_code(400); // Bad Request
-        echo json_encode(["message" => "Invalid age"]);
-        exit();
-    }
-
-    // Validate track (assuming track should be a string)
-    if (!isset($data->track) || !is_string($data->track)) {
-        http_response_code(400); // Bad Request
-        echo json_encode(["message" => "Invalid track"]);
-        exit();
-    }
-
     $newName = $data->name;
-    $age = $data->age;
-    $track =$data->track;
-    
 
     // Update data in the database
     try {
         $db = new PDO($dbConfig['dsn'], $dbConfig['username'], $dbConfig['password']);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Update data in the database based on the person's name
-        $stmt = $db->prepare("UPDATE people SET name = :newName, age = :age, track = :track WHERE name = :name");
+        // Update data in the database based on the person's id
+        $stmt = $db->prepare("UPDATE people SET name = :newName WHERE id = :id");
         $stmt->bindParam(':newName', $newName, PDO::PARAM_STR);
-        $stmt->bindParam(':age', $age, PDO::PARAM_STR);
-        $stmt->bindParam(':track', $track, PDO::PARAM_STR);
-        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         // Check if any rows were affected
         $rowCount = $stmt->rowCount();
-        var_dump($rowCount);
-        var_dump($name);
+
         if ($rowCount > 0) {
             // Person updated successfully
             http_response_code(200);
@@ -167,24 +130,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     }
 }
 
-
-// Remove a person by name
+// Remove a person by id
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-    // Get the name from both $_GET and the URL
-    $nameFromQuery = isset($_GET['name']) ? $_GET['name'] : '';
-    $nameFromURL = isset($name) ? $name : '';
+    // Get the id from both $_GET and the URL
+    $idFromQuery = isset($_GET['id']) ? $_GET['id'] : '';
+    $idFromURL = isset($id) ? $id : '';
 
-    // Use the name from the query parameter if available, otherwise use the name from the URL
-    $name = !empty($nameFromQuery) ? $nameFromQuery : $nameFromURL;
+    // Use the id from the query parameter if available, otherwise use the id from the URL
+    $id = !empty($idFromQuery) ? $idFromQuery : $idFromURL;
 
     // Delete data from the database
     try {
         $db = new PDO($dbConfig['dsn'], $dbConfig['username'], $dbConfig['password']);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Delete data from the database based on the person's name
-        $stmt = $db->prepare("DELETE FROM people WHERE name = :name");
-        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        // Delete data from the database based on the person's id
+        $stmt = $db->prepare("DELETE FROM people WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         // Check if any rows were affected

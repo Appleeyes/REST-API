@@ -5,3 +5,5 @@ $dbConfig = [
     'username' => 'applw',
     'password' => 'apple@22',
 ];
+
+?>
