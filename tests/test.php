@@ -35,8 +35,6 @@ function testCreatePerson($apiBaseUrl)
 {
     $data = [
         "name" => "Brown Dude",
-        "age" => "25",
-        "track" => "Videographic"
     ];
 
     $url = $apiBaseUrl;
@@ -49,9 +47,9 @@ function testCreatePerson($apiBaseUrl)
 // Test Read (GET) operation
 function testReadPerson($apiBaseUrl)
 {
-    $personName = 'John Doe';
+    $personId = 10;
 
-    $url = $apiBaseUrl . '?name=' . urlencode($personName);
+    $url = $apiBaseUrl . '/' . $personId;
 
     $response = sendRequest($url, 'GET');
     echo "Read Operation:\n";
@@ -61,15 +59,13 @@ function testReadPerson($apiBaseUrl)
 // Test Update (PUT) operation
 function testUpdatePerson($apiBaseUrl)
 {
-    $personName = 'John Doe';
+    $personId = 10;
 
     $data = [
-        "name" => "John Doe",
-        "age" => "15",
-        "track" => "Backend"
+        "name" => "Updated Brown Dude",
     ];
 
-    $url = $apiBaseUrl . '?name=' . urlencode($personName);
+    $url = $apiBaseUrl . '/' . $personId;
 
     $response = sendRequest($url, 'PUT', $data);
     echo "Update Operation:\n";
@@ -79,9 +75,9 @@ function testUpdatePerson($apiBaseUrl)
 // Test Delete (DELETE) operation
 function testDeletePerson($apiBaseUrl)
 {
-    $personName = 'Brown Dude';
+    $personId = 10;
 
-    $url = $apiBaseUrl . '?name=' . urlencode($personName);
+    $url = $apiBaseUrl . '/' . $personId;
 
     $response = sendRequest($url, 'DELETE');
     echo "Delete Operation:\n";
